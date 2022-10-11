@@ -3,26 +3,26 @@ package handler
 import (
 	"net/http"
 
-	"desafio-go-web/internal/tickets"
+	"github.com/Lu-meli/desafio-goweb-luciamorel/internal/tickets"
 	"github.com/gin-gonic/gin"
 )
 
-type Service struct {
+type Ticket struct {
 	service tickets.Service
 }
 
-func NewService(s tickets.Service) *Service {
-	return &Service{
+func NewTicket(s tickets.Service) *Ticket {
+	return &Ticket{
 		service: s,
 	}
 }
 
-func (s *Service) GetTicketsByCountry() gin.HandlerFunc {
+func (t *Ticket) GetTicketsByCountry() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		destination := c.Param("dest")
 
-		tickets, err := s.service.GetTotalTickets(c, destination)
+		tickets, err := t.service.GetTotalTickets(c, destination)
 		if err != nil {
 			c.String(http.StatusInternalServerError, err.Error(), nil)
 			return
@@ -32,12 +32,12 @@ func (s *Service) GetTicketsByCountry() gin.HandlerFunc {
 	}
 }
 
-func (s *Service) AverageDestination() gin.HandlerFunc {
+func (t *Ticket) AverageDestination() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		destination := c.Param("dest")
 
-		avg, err := s.service.AverageDestination(c, destination)
+		avg, err := t.service.AverageDestination(c, destination)
 		if err != nil {
 			c.String(http.StatusInternalServerError, err.Error(), nil)
 			return

@@ -6,24 +6,35 @@ import (
 	"os"
 	"strconv"
 
-	"desafio-go-web/internal/domain"
+	"github.com/Lu-meli/desafio-goweb-luciamorel/cmd/server/handler"
+	"github.com/Lu-meli/desafio-goweb-luciamorel/internal/domain"
+	"github.com/Lu-meli/desafio-goweb-luciamorel/internal/tickets"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-
 	// Cargo csv.
-	list, err := LoadTicketsFromFile("../../tickets.csv")
+	list, err := LoadTicketsFromFile("./tickets.csv")
 	if err != nil {
 		panic("Couldn't load tickets")
 	}
 
+	repo := tickets.NewRepository(list)
+	service := tickets.NewService(repo)
+	ticketHandler := handler.NewTicket(service)
+
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) { c.String(200, "pong") })
-	// Rutas a desarollar:
-	
-	// GET - “/ticket/getByCountry/:dest”
-	// GET - “/ticket/getAverage/:dest”
+	r.GET("/ping", func(c *gin.Context) {
+		fmt.Println(list)
+		c.String(200, "pong")
+	})
+
+	ticket := r.Group("/ticket")
+	{
+		ticket.GET("/getByCountry/:dest", ticketHandler.GetTicketsByCountry())
+		ticket.GET("/getAverage/:dest", ticketHandler.AverageDestination())
+	}
+
 	if err := r.Run(); err != nil {
 		panic(err)
 	}

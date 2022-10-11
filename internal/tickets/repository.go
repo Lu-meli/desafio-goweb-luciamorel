@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Lu-meli/desafio-goweb-luciamorel/internal/domain"
 )
 
 type Repository interface {
